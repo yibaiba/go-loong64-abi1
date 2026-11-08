@@ -47,7 +47,7 @@ bash scripts/pack-release.sh ./build/go-1.27.3-abi1
 | --- | --- |
 | `VERSION`（写成 go1.27.3） | `src/runtime`（`_NSIG = 65`） |
 | 1.27.3：`crypto/x509` | `cmd/compile`、`cmd/link`、syscall |
-| 1.27.2：`crypto/tls`、`net/http`、`net/textproto`、`html/template`、`os`、`encoding/json`、`compress/flate`、`crypto/mlkem` | |
+| 1.27.2：`crypto/tls`、`net/http`、`net/textproto`、`html/template`、`os`、`encoding/json`、`compress/flate`、`crypto/mlkem`、`cmd/go` | `cmd/compile`、`cmd/link`、`cmd/internal`（1.27.3 的 objabi 和 Loongnix 链接器对不上） |
 
 编完检查：
 

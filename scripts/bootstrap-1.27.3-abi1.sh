@@ -53,8 +53,9 @@ cp -a "$BOOTSTRAP" "$PREFIX"
 
 echo "overlay upstream VERSION + 1.27.2/1.27.3 stdlib (keep Loongnix runtime)"
 cp -a "$WORKDIR/go1.27.3.src/VERSION" "$PREFIX/VERSION"
-# 1.27.3: crypto/x509. 1.27.2: tls/http/template/os/json/flate/mlkem.
-# Do not overlay runtime/cmd/compile/cmd/link (ABI 1.0).
+# 1.27.3: crypto/x509. 1.27.2: tls/http/template/os/json/flate/mlkem, cmd/go.
+# cmd/compile + cmd/internal from 1.27.3 break Loongnix cmd/link/objabi
+# (R_LOONG64_GOT / PreserveMethodOrder). Keep Loongnix compile/link/runtime.
 overlay_dirs=(
   crypto/x509
   crypto/tls
@@ -65,6 +66,7 @@ overlay_dirs=(
   compress/flate
   encoding/json
   os
+  cmd/go
 )
 for d in "${overlay_dirs[@]}"; do
   src="$WORKDIR/go1.27.3.src/src/$d"

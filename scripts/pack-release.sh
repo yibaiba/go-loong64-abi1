@@ -18,7 +18,7 @@ This is NOT the official go.dev linux-loong64 toolchain (ABI 2.0).
 
 It is Go 1.27.3 bootstrapped on LoongArch ABI 1.0 (Kylin/UOS/Loongnix)
 from Loongnix go1.27.1 (GOROOT_BOOTSTRAP), with upstream 1.27.3 VERSION
-and 1.27.2/1.27.3 stdlib (x509, tls, http, json, …) overlaid.
+and 1.27.2/1.27.3 stdlib plus cmd/go overlaid.
 Runtime keeps _NSIG=65. ELF Flags=0x3 (OBJ-v0).
 
 See scripts/bootstrap-1.27.3-abi1.sh in this repository to rebuild.
