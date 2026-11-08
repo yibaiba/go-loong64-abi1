@@ -35,13 +35,11 @@ bash scripts/bootstrap-1.27.3-abi1.sh
 bash scripts/pack-release.sh ./build/go-1.27.3-abi1
 ```
 
-Loongnix 源（本机访问不了就先下好放到 `WORKDIR`）：
+引导输入也在同一个 Release 里（脚本默认从这里下，不必再访问 ftp.loongnix.cn / go.dev）：
 
-- https://ftp.loongnix.cn/toolchain/golang/go-1.27/abi1.0/go1.27.1.linux-loong64.tar.gz
-
-官方 src：
-
-- https://dl.google.com/go/go1.27.3.src.tar.gz
+- [go1.27.1.linux-loong64.tar.gz](https://github.com/yibaiba/go-loong64-abi1/releases/download/go1.27.3-linux-loong64-abi1/go1.27.1.linux-loong64.tar.gz) — Loongnix ABI1 1.27.1（bootstrap）
+- [go1.27.3.src.tar.gz](https://github.com/yibaiba/go-loong64-abi1/releases/download/go1.27.3-linux-loong64-abi1/go1.27.3.src.tar.gz) — 官方 1.27.3 源码（只叠 VERSION + crypto/x509）
+- [go1.27.3.linux-loong64-abi1.tar.gz](https://github.com/yibaiba/go-loong64-abi1/releases/download/go1.27.3-linux-loong64-abi1/go1.27.3.linux-loong64-abi1.tar.gz) — 编好的 ABI1 1.27.3
 
 只叠这两处，其余保持 Loongnix 1.27.1：
 

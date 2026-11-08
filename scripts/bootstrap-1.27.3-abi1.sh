@@ -11,8 +11,9 @@
 # Must run ON an ABI1 loong64 host. CGO_ENABLED=0.
 set -euo pipefail
 
-LOONGNIX_URL=${LOONGNIX_URL:-https://ftp.loongnix.cn/toolchain/golang/go-1.27/abi1.0/go1.27.1.linux-loong64.tar.gz}
-UPSTREAM_SRC_URL=${UPSTREAM_SRC_URL:-https://dl.google.com/go/go1.27.3.src.tar.gz}
+REL=${REL:-https://github.com/yibaiba/go-loong64-abi1/releases/download/go1.27.3-linux-loong64-abi1}
+LOONGNIX_URL=${LOONGNIX_URL:-$REL/go1.27.1.linux-loong64.tar.gz}
+UPSTREAM_SRC_URL=${UPSTREAM_SRC_URL:-$REL/go1.27.3.src.tar.gz}
 WORKDIR=${WORKDIR:-$PWD/build}
 PREFIX=${PREFIX:-$WORKDIR/go-1.27.3-abi1}
 BOOTSTRAP=${BOOTSTRAP:-$WORKDIR/go-loongnix-1.27.1/go}
