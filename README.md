@@ -22,7 +22,7 @@ go version   # go1.27.3 linux/loong64
 
 必须在 **ABI1 龙芯机** 上编（麒麟 V10 loongarch64 等）。不能在 amd64 上交叉出 ABI1 的 `go` 二进制。
 
-思路：Loongnix 已经有能跑的 ABI1 **go1.27.1**（带完整 src）。用它当 `GOROOT_BOOTSTRAP`，把官方 1.27.3 的 `VERSION` 和 `crypto/x509` 叠上去，**runtime 仍用 Loongnix 的**（`_NSIG=65`），再 `./make.bash`。这样 `go version` 是 1.27.3，ELF 仍是 ABI1。
+思路：Loongnix 已经有能跑的 ABI1 **go1.27.1**（带完整 src）。用它当 `GOROOT_BOOTSTRAP`，把官方 1.27.3 的 `VERSION` 以及 1.27.2/1.27.3 的 stdlib 安全补丁叠上去，**runtime 仍用 Loongnix 的**（`_NSIG=65`），再 `./make.bash`。这样 `go version` 是 1.27.3，ELF 仍是 ABI1。
 
 不要整棵换成官方 1.27.3 src：官方 loong64 runtime 是 ABI2。
 
@@ -38,15 +38,16 @@ bash scripts/pack-release.sh ./build/go-1.27.3-abi1
 引导输入也在同一个 Release 里（脚本默认从这里下，不必再访问 ftp.loongnix.cn / go.dev）：
 
 - [go1.27.1.linux-loong64.tar.gz](https://github.com/yibaiba/go-loong64-abi1/releases/download/go1.27.3-linux-loong64-abi1/go1.27.1.linux-loong64.tar.gz) — Loongnix ABI1 1.27.1（bootstrap）
-- [go1.27.3.src.tar.gz](https://github.com/yibaiba/go-loong64-abi1/releases/download/go1.27.3-linux-loong64-abi1/go1.27.3.src.tar.gz) — 官方 1.27.3 源码（只叠 VERSION + crypto/x509）
+- [go1.27.3.src.tar.gz](https://github.com/yibaiba/go-loong64-abi1/releases/download/go1.27.3-linux-loong64-abi1/go1.27.3.src.tar.gz) — 官方 1.27.3 源码（叠 VERSION 和 1.27.2/1.27.3 的 std 包）
 - [go1.27.3.linux-loong64-abi1.tar.gz](https://github.com/yibaiba/go-loong64-abi1/releases/download/go1.27.3-linux-loong64-abi1/go1.27.3.linux-loong64-abi1.tar.gz) — 编好的 ABI1 1.27.3
 
-只叠这两处，其余保持 Loongnix 1.27.1：
+叠这些，其余保持 Loongnix 1.27.1：
 
 | 叠上去 | 保持不动 |
 | --- | --- |
-| `VERSION`（写成 go1.27.3） | `src/runtime/os_linux_loong64.go`（`_NSIG = 65`） |
-| `src/crypto/x509` | 链接器、syscall、cgo 相关 ABI |
+| `VERSION`（写成 go1.27.3） | `src/runtime`（`_NSIG = 65`） |
+| 1.27.3：`crypto/x509` | `cmd/compile`、`cmd/link`、syscall |
+| 1.27.2：`crypto/tls`、`net/http`、`net/textproto`、`html/template`、`os`、`encoding/json`、`compress/flate`、`crypto/mlkem` | |
 
 编完检查：
 

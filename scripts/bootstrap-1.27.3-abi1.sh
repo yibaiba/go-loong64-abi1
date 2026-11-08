@@ -5,8 +5,8 @@
 # segfaults on Kylin ABI 1.0 (ld.so.1, ELF Flags=0x3, _NSIG=65).
 #
 # How: copy Loongnix go1.27.1 ABI1 (compiler + src), overlay upstream 1.27.3
-# VERSION + crypto/x509 only, keep Loongnix runtime, then make.bash with
-# GOROOT_BOOTSTRAP=that 1.27.1.
+# VERSION plus 1.27.2/1.27.3 stdlib security and bugfix trees, keep Loongnix
+# runtime, then make.bash with GOROOT_BOOTSTRAP=that 1.27.1.
 #
 # Must run ON an ABI1 loong64 host. CGO_ENABLED=0.
 set -euo pipefail
@@ -51,10 +51,30 @@ rm -rf "$PREFIX"
 mkdir -p "$(dirname "$PREFIX")"
 cp -a "$BOOTSTRAP" "$PREFIX"
 
-echo "overlay upstream VERSION + crypto/x509 (keep Loongnix runtime)"
+echo "overlay upstream VERSION + 1.27.2/1.27.3 stdlib (keep Loongnix runtime)"
 cp -a "$WORKDIR/go1.27.3.src/VERSION" "$PREFIX/VERSION"
-rm -rf "$PREFIX/src/crypto/x509"
-cp -a "$WORKDIR/go1.27.3.src/src/crypto/x509" "$PREFIX/src/crypto/x509"
+# 1.27.3: crypto/x509. 1.27.2: tls/http/template/os/json/flate/mlkem.
+# Do not overlay runtime/cmd/compile/cmd/link (ABI 1.0).
+overlay_dirs=(
+  crypto/x509
+  crypto/tls
+  crypto/mlkem
+  html/template
+  net/http
+  net/textproto
+  compress/flate
+  encoding/json
+  os
+)
+for d in "${overlay_dirs[@]}"; do
+  src="$WORKDIR/go1.27.3.src/src/$d"
+  dst="$PREFIX/src/$d"
+  [[ -d $src ]] || { echo "missing upstream $d" >&2; exit 1; }
+  rm -rf "$dst"
+  mkdir -p "$(dirname "$dst")"
+  cp -a "$src" "$dst"
+  echo "  overlay src/$d"
+done
 
 if ! grep -q '_NSIG.*=.*65' "$PREFIX/src/runtime/os_linux_loong64.go"; then
   echo "runtime _NSIG is not 65; refusing to build (would not be ABI1)" >&2
